@@ -51,9 +51,9 @@ main{padding:16px;display:grid;gap:14px}
 .saved-offer small{display:block;color:var(--muted);margin-top:4px}
 .saved-offer .actions{margin:0}
 footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
+#printOffer{display:none}
 @media(min-width:700px){main{grid-template-columns:1fr 1fr;align-items:start}.tabs,.full{grid-column:1/-1}.results{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:420px){main{padding:10px}.card{padding:13px}.grid{gap:9px}.metric .value{font-size:17px}.tab,button{padding:10px 11px}}
-#printOffer{display:none}
 @media print{
   @page{size:A4 landscape;margin:10mm}
   body{background:#fff;padding:0;color:#1e293b;font-family:Arial,Helvetica,sans-serif;font-size:8pt;line-height:1.35}
@@ -100,52 +100,52 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
 <body>
 <header><div class="wrap"><h1>📊 KalkulatorCijena</h1><p>Kalkulacija cijena, zarade i ponuda</p></div></header>
 <main>
-  <nav class="tabs no-print" aria-label="Navigacija">
-    <button class="tab active" data-tab="calculator">Kalkulator</button>
-    <button class="tab" data-tab="offer">Izrada ponude</button>
-    <button class="tab" data-tab="saved">Spremljene ponude</button>
-  </nav>
+<nav class="tabs no-print" aria-label="Navigacija">
+<button class="tab active" data-tab="calculator">Kalkulator</button>
+<button class="tab" data-tab="offer">Izrada ponude</button>
+<button class="tab" data-tab="saved">Spremljene ponude</button>
+</nav>
 
-  <section id="calculator" class="card">
-    <h2>Brzi kalkulator</h2>
-    <div class="field"><label for="purchase">Nabavna cijena (€)</label><input id="purchase" type="number" min="0" step="0.01" value="100" inputmode="decimal"></div>
-    <div class="results" style="margin-top:12px">
-      <div class="metric"><div class="label">Cijena dobavljača s maržom</div><div class="value" id="supplier">€ 97,50</div></div>
-      <div class="metric"><div class="label">Prodajna cijena bez PDV-a (urediva)</div><input id="quickNet" type="number" min="0" step="0.01" value="120" inputmode="decimal"></div>
-      <div class="metric"><div class="label">Prodajna cijena s PDV-om (urediva)</div><input id="quickGross" type="number" min="0" step="0.01" value="150" inputmode="decimal"></div>
-      <div class="metric"><div class="label">Zarada po komadu</div><div class="value" id="profit">€ 22,50</div></div>
-    </div>
-    <p class="note">Početni izračun: cijena dobavljača s maržom = nabavna cijena × 0,75 × 1,30; prodajna cijena bez PDV-a = nabavna cijena × 0,75 × 1,60. Ako ručno promijeniš jednu prodajnu cijenu, druga se automatski usklađuje prema PDV-u od 25%.</p>
-  </section>
+<section id="calculator" class="card">
+<h2>Brzi kalkulator</h2>
+<div class="field"><label for="purchase">Nabavna cijena (€)</label><input id="purchase" type="number" min="0" step="0.01" value="100" inputmode="decimal"></div>
+<div class="results" style="margin-top:12px">
+<div class="metric"><div class="label">Cijena dobavljača s maržom</div><div class="value" id="supplier">€ 97,50</div></div>
+<div class="metric"><div class="label">Prodajna cijena bez PDV-a (urediva)</div><input id="quickNet" type="number" min="0" step="0.01" value="120" inputmode="decimal"></div>
+<div class="metric"><div class="label">Prodajna cijena s PDV-om (urediva)</div><input id="quickGross" type="number" min="0" step="0.01" value="150" inputmode="decimal"></div>
+<div class="metric"><div class="label">Zarada po komadu</div><div class="value" id="profit">€ 22,50</div></div>
+</div>
+<p class="note">Početni izračun: cijena dobavljača s maržom = nabavna cijena × 0,75 × 1,30; prodajna cijena bez PDV-a = nabavna cijena × 0,75 × 1,60. Ako ručno promijeniš jednu prodajnu cijenu, druga se automatski usklađuje prema PDV-u od 25%.</p>
+</section>
 
-  <section id="offer" class="card hidden">
-    <h2>Izrada ponude</h2>
-    <div class="grid">
-      <div class="field"><label for="offerName">Naziv ponude / klijent</label><input id="offerName" placeholder="Npr. Ponuda za klijenta"></div>
-      <div class="field"><label for="offerDate">Datum</label><input id="offerDate" type="date"></div>
-    </div>
-    <div id="items"></div>
-    <div class="actions no-print">
-      <button id="addItem" class="btn-secondary">＋ Dodaj stavku</button>
-      <button id="saveOffer" class="btn-primary">Spremi ponudu</button>
-      <button id="exportPdf" class="btn-green">Izvezi / ispiši PDF</button>
-    </div>
-    <div id="offerTotals" class="card" style="margin-top:14px;background:#f8fafc">
-      <h2>Ukupno</h2>
-      <div class="summaryline"><span>Ukupno bez PDV-a</span><strong id="totalNet">€ 0,00</strong></div>
-      <div class="summaryline"><span>PDV (25%)</span><strong id="totalVat">€ 0,00</strong></div>
-      <div class="summaryline"><span>Ukupno s PDV-om</span><strong id="totalGross">€ 0,00</strong></div>
-      <div class="summaryline"><span>Ukupna zarada</span><strong id="totalProfit">€ 0,00</strong></div>
-    </div>
-    <p class="note no-print">Za PDF odaberi „Izvezi / ispiši PDF”, a u prozoru za ispis odaberi „Spremi kao PDF”.</p>
-    <div id="printOffer" aria-hidden="true"></div>
-  </section>
+<section id="offer" class="card hidden">
+<h2>Izrada ponude</h2>
+<div class="grid">
+<div class="field"><label for="offerName">Naziv ponude / klijent</label><input id="offerName" placeholder="Npr. Ponuda za klijenta"></div>
+<div class="field"><label for="offerDate">Datum</label><input id="offerDate" type="date"></div>
+</div>
+<div id="items"></div>
+<div class="actions no-print">
+<button id="addItem" class="btn-secondary">＋ Dodaj stavku</button>
+<button id="saveOffer" class="btn-primary">Spremi ponudu</button>
+<button id="exportPdf" class="btn-green">Izvezi / ispiši PDF</button>
+</div>
+<div id="offerTotals" class="card" style="margin-top:14px;background:#f8fafc">
+<h2>Ukupno</h2>
+<div class="summaryline"><span>Ukupno bez PDV-a</span><strong id="totalNet">€ 0,00</strong></div>
+<div class="summaryline"><span>PDV (25%)</span><strong id="totalVat">€ 0,00</strong></div>
+<div class="summaryline"><span>Ukupno s PDV-om</span><strong id="totalGross">€ 0,00</strong></div>
+<div class="summaryline"><span>Ukupna zarada</span><strong id="totalProfit">€ 0,00</strong></div>
+</div>
+<p class="note no-print">Za PDF odaberi „Izvezi / ispiši PDF”, a u prozoru za ispis odaberi „Spremi kao PDF”.</p>
+<div id="printOffer" aria-hidden="true"></div>
+</section>
 
-  <section id="saved" class="card hidden">
-    <h2>Spremljene ponude</h2>
-    <div id="savedList"></div>
-    <p class="note">Ponude se spremaju u lokalnu memoriju ovog preglednika na ovom uređaju. Brisanje podataka preglednika može ukloniti spremljene ponude.</p>
-  </section>
+<section id="saved" class="card hidden">
+<h2>Spremljene ponude</h2>
+<div id="savedList"></div>
+<p class="note">Ponude se spremaju u lokalnu memoriju ovog preglednika na ovom uređaju. Brisanje podataka preglednika može ukloniti spremljene ponude.</p>
+</section>
 </main>
 <footer>KalkulatorCijena · PDV 25% · Podaci se čuvaju lokalno u pregledniku</footer>
 
@@ -158,22 +158,22 @@ let offers=JSON.parse(localStorage.getItem('kalkulatorCijenaOffers')||'[]');
 let itemCounter=0;
 
 function calculated(purchase){
-  const base=Math.max(0,purchase)*.75;
-  return {supplier:base*1.30,net:base*1.60,gross:base*1.60*1.25,profit:base*1.60-base*1.30};
+const base=Math.max(0,purchase)*.75;
+return{supplier:base*1.30,net:base*1.60,gross:base*1.60*1.25,profit:base*1.60-base*1.30};
 }
 
 function updateQuick(source){
-  const p=num('purchase'),c=calculated(p);
-  if(source==='purchase'||source==='init'){
-    $('supplier').textContent=euro(c.supplier);
-    $('quickNet').value=moneyInput(c.net).toFixed(2);
-    $('quickGross').value=moneyInput(c.net*1.25).toFixed(2);
-  }else if(source==='net'){
-    $('quickGross').value=moneyInput(num('quickNet')*1.25).toFixed(2);
-  }else if(source==='gross'){
-    $('quickNet').value=moneyInput(num('quickGross')/1.25).toFixed(2);
-  }
-  $('profit').textContent=euro(num('quickNet')-c.supplier);
+const p=num('purchase'),c=calculated(p);
+if(source==='purchase'||source==='init'){
+$('supplier').textContent=euro(c.supplier);
+$('quickNet').value=moneyInput(c.net).toFixed(2);
+$('quickGross').value=moneyInput(c.net*1.25).toFixed(2);
+}else if(source==='net'){
+$('quickGross').value=moneyInput(num('quickNet')*1.25).toFixed(2);
+}else if(source==='gross'){
+$('quickNet').value=moneyInput(num('quickGross')/1.25).toFixed(2);
+}
+$('profit').textContent=euro(num('quickNet')-c.supplier);
 }
 
 $('purchase').addEventListener('input',()=>updateQuick('purchase'));
@@ -182,307 +182,289 @@ $('quickGross').addEventListener('input',()=>updateQuick('gross'));
 updateQuick('init');
 
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
-  ['calculator','offer','saved'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));
-  if(b.dataset.tab==='saved')renderSaved();
+document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
+['calculator','offer','saved'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));
+if(b.dataset.tab==='saved')renderSaved();
 }));
 
 $('offerDate').value=new Date().toISOString().slice(0,10);
 
 function addItem(data={}){
-  itemCounter++;
-  const id=itemCounter;
-  const row=document.createElement('div');
-  row.className='item-row';
-  row.dataset.id=id;
-  row.innerHTML=`<div class="item-row-head"><strong>Stavka ${id}</strong><button type="button" class="btn-danger no-print remove">Ukloni</button></div>
-  <div class="grid">
-    <div class="field"><label>Naziv stavke</label><input class="name" placeholder="Naziv proizvoda/usluge"></div>
-    <div class="field"><label>Količina</label><input class="qty" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
-    <div class="field"><label>Nabavna cijena / kom. (€)</label><input class="purchase" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
-    <div class="field"><label>Cijena dobavljača s maržom / kom. (€)</label><input class="supplier" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
-    <div class="field"><label>Prodajna cijena bez PDV-a / kom. (€)</label><input class="net" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
-    <div class="field"><label>Prodajna cijena s PDV-om / kom. (€)</label><input class="gross" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
-  </div>
-  <div class="results" style="margin-top:10px">
-    <div class="metric"><div class="label">Zarada po komadu</div><div class="value profit-unit">€ 0,00</div></div>
-    <div class="metric"><div class="label">Ukupna zarada za stavku</div><div class="value profit-total">€ 0,00</div></div>
-  </div>`;
-
-  $('items').appendChild(row);
-
-  const q=row.querySelector('.qty');
-  const p=row.querySelector('.purchase');
-  const s=row.querySelector('.supplier');
-  const n=row.querySelector('.net');
-  const g=row.querySelector('.gross');
-
-  const recalc=(source)=>{
-    const pv=Math.max(0,Number(p.value)||0);
-    const sv=Math.max(0,Number(s.value)||0);
-    const nv=Math.max(0,Number(n.value)||0);
-    const gv=Math.max(0,Number(g.value)||0);
-
-    if(source==='purchase'){
-      const c=calculated(pv);
-      s.value=moneyInput(c.supplier).toFixed(2);
-      n.value=moneyInput(c.net).toFixed(2);
-      g.value=moneyInput(c.gross).toFixed(2);
-    }
-    if(source==='net')g.value=moneyInput(nv*1.25).toFixed(2);
-    if(source==='gross')n.value=moneyInput(gv/1.25).toFixed(2);
-
-    const qty=Math.max(1,Number(q.value)||1);
-    const profit=moneyInput((Number(n.value)||0)-(Number(s.value)||0));
-    row.querySelector('.profit-unit').textContent=euro(profit);
-    row.querySelector('.profit-total').textContent=euro(profit*qty);
-    updateTotals();
-  };
-
-  p.addEventListener('input',()=>recalc('purchase'));
-  s.addEventListener('input',()=>recalc('supplier'));
-  n.addEventListener('input',()=>recalc('net'));
-  g.addEventListener('input',()=>recalc('gross'));
-  q.addEventListener('input',()=>recalc('qty'));
-  row.querySelector('.remove').addEventListener('click',()=>{row.remove();updateTotals();});
-
-  if(data.name)row.querySelector('.name').value=data.name;
-  if(data.qty)q.value=data.qty;
-  if(data.purchase!=null)p.value=data.purchase;
-  if(data.supplier!=null)s.value=data.supplier;
-  if(data.net!=null)n.value=data.net;
-  if(data.gross!=null)g.value=data.gross;
-
-  if(data.purchase==null)recalc('purchase');
-  else recalc('qty');
-
-  return row;
+itemCounter++;
+const id=itemCounter;
+const row=document.createElement('div');
+row.className='item-row';
+row.dataset.id=id;
+row.innerHTML=`<div class="item-row-head"><strong>Stavka ${id}</strong><button type="button" class="btn-danger no-print remove">Ukloni</button></div>
+<div class="grid">
+<div class="field"><label>Naziv stavke</label><input class="name" placeholder="Naziv proizvoda/usluge"></div>
+<div class="field"><label>Količina</label><input class="qty" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
+<div class="field"><label>Nabavna cijena / kom. (€)</label><input class="purchase" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
+<div class="field"><label>Cijena dobavljača s maržom / kom. (€)</label><input class="supplier" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
+<div class="field"><label>Prodajna cijena bez PDV-a / kom. (€)</label><input class="net" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
+<div class="field"><label>Prodajna cijena s PDV-om / kom. (€)</label><input class="gross" type="number" min="0" step="0.01" value="0" inputmode="decimal"></div>
+</div>
+<div class="results" style="margin-top:10px">
+<div class="metric"><div class="label">Zarada po komadu</div><div class="value profit-unit">€ 0,00</div></div>
+<div class="metric"><div class="label">Ukupna zarada za stavku</div><div class="value profit-total">€ 0,00</div></div>
+</div>`;
+$('items').appendChild(row);
+const q=row.querySelector('.qty'),p=row.querySelector('.purchase'),s=row.querySelector('.supplier'),n=row.querySelector('.net'),g=row.querySelector('.gross');
+const recalc=(source)=>{
+let pv=Math.max(0,Number(p.value)||0),sv=Math.max(0,Number(s.value)||0),nv=Math.max(0,Number(n.value)||0),gv=Math.max(0,Number(g.value)||0);
+if(source==='purchase'){const c=calculated(pv);s.value=moneyInput(c.supplier).toFixed(2);n.value=moneyInput(c.net).toFixed(2);g.value=moneyInput(c.gross).toFixed(2);}
+if(source==='net')g.value=moneyInput(nv*1.25).toFixed(2);
+if(source==='gross')n.value=moneyInput(gv/1.25).toFixed(2);
+const qty=Math.max(1,Number(q.value)||1);
+const profit=moneyInput((Number(n.value)||0)-(Number(s.value)||0));
+row.querySelector('.profit-unit').textContent=euro(profit);
+row.querySelector('.profit-total').textContent=euro(profit*qty);
+updateTotals();
+};
+p.addEventListener('input',()=>recalc('purchase'));
+s.addEventListener('input',()=>recalc('supplier'));
+n.addEventListener('input',()=>recalc('net'));
+g.addEventListener('input',()=>recalc('gross'));
+q.addEventListener('input',()=>recalc('qty'));
+row.querySelector('.remove').addEventListener('click',()=>{row.remove();updateTotals();});
+if(data.name)row.querySelector('.name').value=data.name;
+if(data.qty)q.value=data.qty;
+if(data.purchase!=null)p.value=data.purchase;
+if(data.supplier!=null)s.value=data.supplier;
+if(data.net!=null)n.value=data.net;
+if(data.gross!=null)g.value=data.gross;
+if(data.purchase==null)recalc('purchase');else recalc('qty');
+return row;
 }
 
-function getItems(){
-  return [...$('items').querySelectorAll('.item-row')].map(row=>({
-    name:row.querySelector('.name').value.trim()||'Stavka',
-    qty:Math.max(1,Number(row.querySelector('.qty').value)||1),
-    purchase:Math.max(0,Number(row.querySelector('.purchase').value)||0),
-    supplier:Math.max(0,Number(row.querySelector('.supplier').value)||0),
-    net:Math.max(0,Number(row.querySelector('.net').value)||0),
-    gross:Math.max(0,Number(row.querySelector('.gross').value)||0)
-  }));
-}
+function getItems(){return[...$('items').querySelectorAll('.item-row')].map(row=>({
+name:row.querySelector('.name').value.trim()||'Stavka',
+qty:Math.max(1,Number(row.querySelector('.qty').value)||1),
+purchase:Math.max(0,Number(row.querySelector('.purchase').value)||0),
+supplier:Math.max(0,Number(row.querySelector('.supplier').value)||0),
+net:Math.max(0,Number(row.querySelector('.net').value)||0),
+gross:Math.max(0,Number(row.querySelector('.gross').value)||0)
+}));}
 
 function updateTotals(){
-  const items=getItems();
-  let net=0,vat=0,gross=0,profit=0;
-  items.forEach(i=>{
-    net+=i.net*i.qty;
-    vat+=(i.gross-i.net)*i.qty;
-    gross+=i.gross*i.qty;
-    profit+=(i.net-i.supplier)*i.qty;
-  });
-  $('totalNet').textContent=euro(net);
-  $('totalVat').textContent=euro(vat);
-  $('totalGross').textContent=euro(gross);
-  $('totalProfit').textContent=euro(profit);
+const items=getItems();let net=0,vat=0,gross=0,profit=0;
+items.forEach(i=>{net+=i.net*i.qty;vat+=(i.gross-i.net)*i.qty;gross+=i.gross*i.qty;profit+=(i.net-i.supplier)*i.qty;});
+$('totalNet').textContent=euro(net);
+$('totalVat').textContent=euro(vat);
+$('totalGross').textContent=euro(gross);
+$('totalProfit').textContent=euro(profit);
 }
 
 $('addItem').addEventListener('click',()=>addItem());
 
 $('saveOffer').addEventListener('click',()=>{
-  const items=getItems();
-  if(!items.length){alert('Dodaj barem jednu stavku.');return;}
-  const offer={
-    id:Date.now(),
-    name:$('offerName').value.trim()||'Ponuda',
-    date:$('offerDate').value||new Date().toISOString().slice(0,10),
-    items,
-    totals:{
-      net:items.reduce((a,i)=>a+i.net*i.qty,0),
-      gross:items.reduce((a,i)=>a+i.gross*i.qty,0),
-      profit:items.reduce((a,i)=>a+(i.net-i.supplier)*i.qty,0)
-    }
-  };
-  offers.unshift(offer);
-  localStorage.setItem('kalkulatorCijenaOffers',JSON.stringify(offers));
-  alert('Ponuda je spremljena na ovom uređaju.');
-  renderSaved();
+const items=getItems();
+if(!items.length){alert('Dodaj barem jednu stavku.');return;}
+const offer={
+id:Date.now(),
+name:$('offerName').value.trim()||'Ponuda',
+date:$('offerDate').value||new Date().toISOString().slice(0,10),
+items,
+totals:{
+net:items.reduce((a,i)=>a+i.net*i.qty,0),
+gross:items.reduce((a,i)=>a+i.gross*i.qty,0),
+profit:items.reduce((a,i)=>a+(i.net-i.supplier)*i.qty,0)
+}};
+offers.unshift(offer);
+localStorage.setItem('kalkulatorCijenaOffers',JSON.stringify(offers));
+alert('Ponuda je spremljena na ovom uređaju.');
+renderSaved();
 });
 
 function renderSaved(){
-  $('savedList').innerHTML='';
-  if(!offers.length){$('savedList').innerHTML='<p>Nema spremljenih ponuda.</p>';return;}
-
-  offers.forEach(o=>{
-    const el=document.createElement('div');
-    el.className='saved-offer';
-
-    const info=document.createElement('div');
-    info.innerHTML='<strong></strong><small></small><small></small>';
-    info.children[0].textContent=o.name;
-    info.children[1].textContent=`${o.date} · ${o.items.length} stavki`;
-    info.children[2].textContent=`Ukupno: ${euro(o.totals.gross)} · Zarada: ${euro(o.totals.profit)}`;
-
-    const actions=document.createElement('div');
-    actions.className='actions';
-
-    const load=document.createElement('button');
-    load.className='btn-secondary';
-    load.textContent='Otvori';
-    load.onclick=()=>loadOffer(o.id);
-
-    const pdf=document.createElement('button');
-    pdf.className='btn-green';
-    pdf.textContent='PDF';
-    pdf.onclick=()=>{loadOffer(o.id);setTimeout(exportPdf,100);};
-
-    const del=document.createElement('button');
-    del.className='btn-danger';
-    del.textContent='Obriši';
-    del.onclick=()=>{
-      if(confirm('Obrisati ovu ponudu?')){
-        offers=offers.filter(x=>x.id!==o.id);
-        localStorage.setItem('kalkulatorCijenaOffers',JSON.stringify(offers));
-        renderSaved();
-      }
-    };
-
-    actions.append(load,pdf,del);
-    el.append(info,actions);
-    $('savedList').appendChild(el);
-  });
+$('savedList').innerHTML='';
+if(!offers.length){$('savedList').innerHTML='<p>Nema spremljenih ponuda.</p>';return;}
+offers.forEach(o=>{
+const el=document.createElement('div');el.className='saved-offer';
+const info=document.createElement('div');info.innerHTML='<strong></strong><small></small><small></small>';
+info.children[0].textContent=o.name;
+info.children[1].textContent=`${o.date} · ${o.items.length} stavki`;
+info.children[2].textContent=`Ukupno: ${euro(o.totals.gross)} · Zarada: ${euro(o.totals.profit)}`;
+const actions=document.createElement('div');actions.className='actions';
+const load=document.createElement('button');load.className='btn-secondary';load.textContent='Otvori';load.onclick=()=>loadOffer(o.id);
+const pdf=document.createElement('button');pdf.className='btn-green';pdf.textContent='PDF';pdf.onclick=()=>{loadOffer(o.id);setTimeout(exportPdf,100);};
+const del=document.createElement('button');del.className='btn-danger';del.textContent='Obriši';
+del.onclick=()=>{if(confirm('Obrisati ovu ponudu?')){offers=offers.filter(x=>x.id!==o.id);localStorage.setItem('kalkulatorCijenaOffers',JSON.stringify(offers));renderSaved();}};
+actions.append(load,pdf,del);el.append(info,actions);$('savedList').appendChild(el);
+});
 }
 
 function loadOffer(id){
-  const o=offers.find(x=>x.id===id);
-  if(!o)return;
-  $('offerName').value=o.name;
-  $('offerDate').value=o.date;
-  $('items').innerHTML='';
-  itemCounter=0;
-  o.items.forEach(i=>addItem(i));
-  document.querySelector('[data-tab="offer"]').click();
-  updateTotals();
+const o=offers.find(x=>x.id===id);if(!o)return;
+$('offerName').value=o.name;$('offerDate').value=o.date;
+$('items').innerHTML='';itemCounter=0;o.items.forEach(i=>addItem(i));
+document.querySelector('[data-tab="offer"]').click();updateTotals();
 }
 
 function escapeHtml(value){
-  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
+/* Izvoz ponude u zasebni prikaz s gumbom za ispis.
+   Ručni gumb je namjernо korišten radi bolje kompatibilnosti s mobilnim preglednicima. */
 function exportPdf(){
-  const items=getItems();
-  if(!items.length){
-    alert('Dodaj barem jednu stavku prije izvoza ponude.');
-    return;
-  }
+const items=getItems();
+if(!items.length){alert('Dodaj barem jednu stavku prije izvoza ponude.');return;}
 
-  updateTotals();
+const name=$('offerName').value.trim()||'Ponuda';
+const date=$('offerDate').value||new Date().toISOString().slice(0,10);
+let totalCustomerNet=0,totalVat=0,totalCustomerGross=0,totalSupplier=0,totalProfit=0;
 
-  const name=$('offerName').value.trim()||'Ponuda';
-  const date=$('offerDate').value||new Date().toISOString().slice(0,10);
+const rows=items.map((i,index)=>{
+const supplierTotal=i.supplier*i.qty;
+const customerNet=i.net*i.qty;
+const customerGross=i.gross*i.qty;
+const vat=customerGross-customerNet;
+const profitPerUnit=i.net-i.supplier;
+const itemProfit=profitPerUnit*i.qty;
+totalSupplier+=supplierTotal;
+totalCustomerNet+=customerNet;
+totalCustomerGross+=customerGross;
+totalVat+=vat;
+totalProfit+=itemProfit;
+return `<tr>
+<td class="center">${index+1}</td>
+<td class="item">${escapeHtml(i.name||'Artikl')}</td>
+<td class="center">${i.qty}</td>
+<td class="money">${euro(i.purchase)}</td>
+<td class="money">${euro(i.supplier)}</td>
+<td class="money">${euro(i.net)}</td>
+<td class="money">${euro(i.gross)}</td>
+<td class="money">${euro(profitPerUnit)}</td>
+<td class="money">${euro(itemProfit)}</td>
+</tr>`;
+}).join('');
 
-  let totalCustomerNet=0;
-  let totalVat=0;
-  let totalCustomerGross=0;
-  let totalSupplier=0;
-  let totalProfit=0;
+const quantity=items.reduce((sum,i)=>sum+i.qty,0);
+const margin=totalCustomerNet?(totalProfit/totalCustomerNet*100).toLocaleString('hr-HR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%':'—';
 
-  const rows=items.map((i,index)=>{
-    const supplierTotal=i.supplier*i.qty;
-    const customerNet=i.net*i.qty;
-    const customerGross=i.gross*i.qty;
-    const vat=customerGross-customerNet;
-    const profitPerUnit=i.net-i.supplier;
-    const itemProfit=profitPerUnit*i.qty;
+const printWindow=window.open('','_blank');
 
-    totalSupplier+=supplierTotal;
-    totalCustomerNet+=customerNet;
-    totalCustomerGross+=customerGross;
-    totalVat+=vat;
-    totalProfit+=itemProfit;
+if(!printWindow){
+alert('Preglednik je blokirao novi prozor. Dopusti skočne prozore za ovu stranicu i pokušaj ponovno.');
+return;
+}
 
-    return `<tr>
-      <td class="center">${index+1}</td>
-      <td class="item">${escapeHtml(i.name||'Artikl')}</td>
-      <td class="center">${i.qty}</td>
-      <td class="money">${euro(i.purchase)}</td>
-      <td class="money">${euro(i.supplier)}</td>
-      <td class="money">${euro(i.net)}</td>
-      <td class="money">${euro(i.gross)}</td>
-      <td class="money">${euro(profitPerUnit)}</td>
-      <td class="money">${euro(itemProfit)}</td>
-    </tr>`;
-  }).join('');
+printWindow.document.open();
+printWindow.document.write(`<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>${escapeHtml(name)} - Ponuda</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#1e293b;font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.3}
+body{padding:12px}
+.toolbar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:8px;padding:10px 0;margin-bottom:18px;background:#fff;border-bottom:1px solid #e2e8f0}
+button{padding:12px 16px;border:0;border-radius:8px;background:#1d4ed8;color:#fff;font-size:14px;font-weight:bold;cursor:pointer}
+button.close{background:#e2e8f0;color:#1e293b}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;padding-bottom:4mm;border-bottom:2px solid #1d4ed8;margin-bottom:5mm}
+h1{font-size:24pt;line-height:1;margin:0 0 2mm;color:#173b72}
+.subtitle{font-size:9pt;color:#64748b;overflow-wrap:anywhere}
+.datebox{flex:0 0 38mm;border:1px solid #dbe3ef;border-radius:2mm;padding:3mm}
+.date-label{font-size:7pt;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+.datebox strong{display:block;font-size:10pt;margin-top:1mm}
+h2{font-size:11pt;color:#173b72;margin:0 0 2mm}
+.table-wrap{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;table-layout:fixed;margin:2mm 0 4mm;font-size:7.3pt}
+th,td{border:1px solid #d7dfeb;padding:2mm 1.3mm;vertical-align:top;line-height:1.22;white-space:normal;overflow-wrap:anywhere;word-break:normal}
+th{background:#eaf0f8;color:#243b5a;font-weight:700;text-align:center}
+tbody tr:nth-child(even){background:#f8fafc}
+.center{text-align:center}
+.money{text-align:right;font-variant-numeric:tabular-nums}
+.item{font-weight:700}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:5mm;align-items:start;margin-top:3mm}
+.totals,.profit{border:1px solid #d7dfeb;border-radius:2mm;padding:3.5mm 4mm;break-inside:avoid}
+.line{display:flex;justify-content:space-between;align-items:flex-start;gap:4mm;padding:1.8mm 0;border-bottom:1px solid #e2e8f0}
+.line span{flex:1;min-width:0;overflow-wrap:anywhere}
+.line strong{white-space:nowrap;text-align:right}
+.grand{font-size:11pt;font-weight:700;color:#173b72;border-top:2px solid #1d4ed8;margin-top:1mm;padding-top:2.5mm;border-bottom:0}
+.profit{background:#eff6ff;border-color:#bfdbfe}
+.profit-label{font-size:8.5pt;color:#475569}
+.profit-amount{font-size:21pt;font-weight:700;color:#166534;margin:1mm 0 3mm}
+.footnote{margin-top:4mm;padding-top:2mm;border-top:1px solid #e2e8f0;color:#64748b;font-size:7pt;line-height:1.3}
+thead{display:table-header-group}
+tr{break-inside:avoid;page-break-inside:avoid}
+@media screen and (min-width:700px){body{padding:20px;max-width:1200px;margin:auto}}
+@media screen and (max-width:600px){
+body{padding:10px;font-size:10px}
+.header{gap:10px}
+h1{font-size:22px}
+.datebox{flex-basis:100px;padding:8px}
+table{min-width:760px;font-size:9px}
+th,td{padding:5px}
+.summary{grid-template-columns:1fr;gap:10px}
+}
+@media print{
+@page{size:A4 landscape;margin:10mm}
+body{padding:0;font-size:9px}
+.toolbar{display:none!important}
+.table-wrap{overflow:visible}
+table{min-width:0;width:100%;font-size:7pt}
+th,td{padding:1.5mm 1mm}
+tr{break-inside:avoid;page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="toolbar">
+<button type="button" onclick="window.print()">Ispiši / Spremi kao PDF</button>
+<button type="button" class="close" onclick="window.close()">Zatvori</button>
+</div>
 
-  const quantity=items.reduce((sum,i)=>sum+i.qty,0);
-  const margin=totalCustomerNet
-    ? (totalProfit/totalCustomerNet*100).toLocaleString('hr-HR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'
-    : '—';
+<div class="header">
+<div><h1>Ponuda</h1><div class="subtitle">${escapeHtml(name)}</div></div>
+<div class="datebox"><div class="date-label">Datum izrade</div><strong>${escapeHtml(date)}</strong></div>
+</div>
 
-  let printArea=$('printOffer');
-  if(!printArea){
-    printArea=document.createElement('section');
-    printArea.id='printOffer';
-    $('offer').appendChild(printArea);
-  }
+<h2>Pregled artikala</h2>
+<div class="table-wrap">
+<table>
+<colgroup>
+<col style="width:4%"><col style="width:14%"><col style="width:5%">
+<col style="width:10%"><col style="width:13%"><col style="width:13%">
+<col style="width:13%"><col style="width:10%"><col style="width:18%">
+</colgroup>
+<thead><tr>
+<th>Br.</th><th>Artikl</th><th>Kol.</th><th>Nabavna cijena<br>po kom.</th>
+<th>Cijena dobavljača<br>s maržom po kom.</th>
+<th>Prodajna cijena<br>bez PDV-a po kom.</th>
+<th>Prodajna cijena<br>s PDV-om po kom.</th>
+<th>Zarada<br>po kom.</th><th>Ukupna zarada<br>po artiklu</th>
+</tr></thead>
+<tbody>${rows}</tbody>
+</table>
+</div>
 
-  printArea.innerHTML=`<div class="print-header">
-    <div>
-      <div class="eyebrow">KalkulatorCijena · Pregled izračuna</div>
-      <h1>Ponuda</h1>
-      <div class="subtitle">${escapeHtml(name)}</div>
-    </div>
-    <div class="meta-box">
-      <div class="meta-label">Datum izrade</div>
-      <strong>${escapeHtml(date)}</strong>
-    </div>
-  </div>
-  <h2 class="section-title">Pregled artikala</h2>
-  <table>
-    <colgroup>
-      <col style="width:4%"><col style="width:14%"><col style="width:5%">
-      <col style="width:10%"><col style="width:13%"><col style="width:13%">
-      <col style="width:13%"><col style="width:10%"><col style="width:18%">
-    </colgroup>
-    <thead><tr>
-      <th>Br.</th><th>Artikl</th><th>Kol.</th>
-      <th>Nabavna cijena<br>po kom.</th>
-      <th>Cijena dobavljača<br>s maržom po kom.</th>
-      <th>Prodajna cijena<br>bez PDV-a po kom.</th>
-      <th>Prodajna cijena<br>s PDV-om po kom.</th>
-      <th>Zarada<br>po kom.</th>
-      <th>Ukupna zarada<br>po artiklu</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <div class="summary-grid">
-    <section class="totals">
-      <h2>Ukupni iznosi</h2>
-      <div class="line"><span>Ukupna cijena dobavljača s maržom bez PDV-a</span><strong>${euro(totalSupplier)}</strong></div>
-      <div class="line"><span>Ukupno bez PDV-a za kupca</span><strong>${euro(totalCustomerNet)}</strong></div>
-      <div class="line"><span>PDV (25%)</span><strong>${euro(totalVat)}</strong></div>
-      <div class="line grand"><span>Ukupno s PDV-om za kupca</span><strong>${euro(totalCustomerGross)}</strong></div>
-    </section>
-    <section class="profit-card">
-      <div class="label">Ukupna zarada</div>
-      <div class="amount">${euro(totalProfit)}</div>
-      <div class="small-line"><span>Broj različitih artikala</span><strong>${items.length}</strong></div>
-      <div class="small-line"><span>Ukupna količina</span><strong>${quantity}</strong></div>
-      <div class="small-line"><span>Marža na prodajnu cijenu bez PDV-a</span><strong>${margin}</strong></div>
-    </section>
-  </div>
-  <div class="footnote">
-    Iznosi su iskazani u eurima (EUR). PDV je obračunat po stopi od 25%.
-    Zarada je izračunata kao prodajna cijena bez PDV-a umanjena za cijenu
-    dobavljača s maržom, pomnoženo s količinom.
-  </div>`;
+<div class="summary">
+<section class="totals">
+<h2>Ukupni iznosi</h2>
+<div class="line"><span>Ukupna cijena dobavljača s maržom bez PDV-a</span><strong>${euro(totalSupplier)}</strong></div>
+<div class="line"><span>Ukupno bez PDV-a za kupca</span><strong>${euro(totalCustomerNet)}</strong></div>
+<div class="line"><span>PDV (25%)</span><strong>${euro(totalVat)}</strong></div>
+<div class="line grand"><span>Ukupno s PDV-om za kupca</span><strong>${euro(totalCustomerGross)}</strong></div>
+</section>
+<section class="profit">
+<div class="profit-label">Ukupna zarada</div>
+<div class="profit-amount">${euro(totalProfit)}</div>
+<div class="line"><span>Broj različitih artikala</span><strong>${items.length}</strong></div>
+<div class="line"><span>Ukupna količina</span><strong>${quantity}</strong></div>
+<div class="line"><span>Marža na prodajnu cijenu bez PDV-a</span><strong>${margin}</strong></div>
+</section>
+</div>
 
-  document.querySelector('[data-tab="offer"]').click();
+<div class="footnote">Iznosi su iskazani u eurima (EUR). PDV je obračunat po stopi od 25%. Zarada je izračunata kao prodajna cijena bez PDV-a umanjena za cijenu dobavljača s maržom, pomnoženo s količinom.</div>
+</body>
+</html>`);
+printWindow.document.close();
 
-  // Pričekaj da Safari iscrta sadržaj prije otvaranja dijaloga za ispis.
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>{
-      window.print();
-    });
-  });
+try{printWindow.focus();}catch(e){}
 }
 
 $('exportPdf').addEventListener('click',exportPdf);

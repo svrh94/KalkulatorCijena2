@@ -222,102 +222,116 @@ function escapeHtml(value){
  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 function exportPdf(){
- const items=getItems();
- if(!items.length){alert('Dodaj barem jednu stavku prije izvoza ponude.');return;}
- updateTotals();
- const name=$('offerName').value.trim()||'Ponuda';
- const date=$('offerDate').value||new Date().toISOString().slice(0,10);
- let totalCustomerNet=0,totalVat=0,totalCustomerGross=0,totalSupplier=0,totalProfit=0;
- const rows=items.map((i,index)=>{
-   const supplierTotal=i.supplier*i.qty;
-   const customerNet=i.net*i.qty;
-   const customerGross=i.gross*i.qty;
-   const vat=customerGross-customerNet;
-   const profitPerUnit=i.net-i.supplier;
-   const itemProfit=profitPerUnit*i.qty;
-   totalSupplier+=supplierTotal;
-   totalCustomerNet+=customerNet;
-   totalCustomerGross+=customerGross;
-   totalVat+=vat;
-   totalProfit+=itemProfit;
-   return `<tr>
-     <td class="center">${index+1}</td>
-     <td class="item">${escapeHtml(i.name||'Artikl')}</td>
-     <td class="center">${i.qty}</td>
-     <td class="money">${euro(i.purchase)}</td>
-     <td class="money">${euro(i.supplier)}</td>
-     <td class="money">${euro(i.net)}</td>
-     <td class="money">${euro(i.gross)}</td>
-     <td class="money">${euro(profitPerUnit)}</td>
-     <td class="money">${euro(itemProfit)}</td>
-   </tr>`;
- }).join('');
- const quantity=items.reduce((sum,i)=>sum+i.qty,0);
- const margin=totalCustomerNet ? (totalProfit/totalCustomerNet*100).toLocaleString('hr-HR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%' : '—';
- const printWindow=window.open('','_blank');
- if(!printWindow){alert('Preglednik je blokirao prozor za ispis. Dopusti skočne prozore za ovu stranicu i pokušaj ponovno.');return;}
- printWindow.document.open();
- printWindow.document.write(`<!doctype html>
- <html lang="hr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
- <title>${escapeHtml(name)} - Ponuda</title>
- <style>
- @page{size:A4 landscape;margin:10mm}
- *{box-sizing:border-box}
- html,body{margin:0;padding:0;background:#fff;color:#1e293b;font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.3}
- .header{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;padding-bottom:4mm;border-bottom:2px solid #1d4ed8;margin-bottom:5mm}
- h1{font-size:24pt;line-height:1;margin:0 0 2mm;color:#173b72}
- .subtitle{font-size:9pt;color:#64748b;overflow-wrap:anywhere}
- .datebox{flex:0 0 38mm;border:1px solid #dbe3ef;border-radius:2mm;padding:3mm}
- .date-label{font-size:7pt;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
- .datebox strong{display:block;font-size:10pt;margin-top:1mm}
- h2{font-size:11pt;color:#173b72;margin:0 0 2mm}
- table{width:100%;border-collapse:collapse;table-layout:fixed;margin:2mm 0 4mm;font-size:7.3pt}
- th,td{border:1px solid #d7dfeb;padding:2mm 1.3mm;vertical-align:top;line-height:1.22;white-space:normal;overflow-wrap:anywhere;word-break:normal}
- th{background:#eaf0f8;color:#243b5a;font-weight:700;text-align:center}
- tbody tr:nth-child(even){background:#f8fafc}
- .center{text-align:center}
- .money{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
- .item{font-weight:700}
- .summary{display:grid;grid-template-columns:1fr 1fr;gap:5mm;align-items:start;margin-top:3mm}
- .totals,.profit{border:1px solid #d7dfeb;border-radius:2mm;padding:3.5mm 4mm;break-inside:avoid}
- .line{display:flex;justify-content:space-between;align-items:flex-start;gap:4mm;padding:1.8mm 0;border-bottom:1px solid #e2e8f0}
- .line span{flex:1;min-width:0;overflow-wrap:anywhere}
- .line strong{white-space:nowrap;text-align:right}
- .grand{font-size:11pt;font-weight:700;color:#173b72;border-top:2px solid #1d4ed8;margin-top:1mm;padding-top:2.5mm;border-bottom:0}
- .profit{background:#eff6ff;border-color:#bfdbfe}
- .profit-label{font-size:8.5pt;color:#475569}
- .profit-amount{font-size:21pt;font-weight:700;color:#166534;margin:1mm 0 3mm}
- .footnote{margin-top:4mm;padding-top:2mm;border-top:1px solid #e2e8f0;color:#64748b;font-size:7pt;line-height:1.3}
- thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
- @media screen{body{padding:12mm;max-width:297mm;margin:auto}.toolbar{display:flex;gap:8px;margin-bottom:10mm}.toolbar button{padding:10px 16px;border:0;border-radius:8px;background:#1d4ed8;color:white;font-weight:bold;cursor:pointer}.toolbar .close{background:#e2e8f0;color:#1e293b}}
- @media print{.toolbar{display:none}}
- </style></head><body>
- <div class="toolbar"><button onclick="window.print()">Ispiši / Spremi kao PDF</button><button class="close" onclick="window.close()">Zatvori</button></div>
- <div class="header"><div><h1>Ponuda</h1><div class="subtitle">${escapeHtml(name)}</div></div>
- <div class="datebox"><div class="date-label">Datum izrade</div><strong>${escapeHtml(date)}</strong></div></div>
- <h2>Pregled artikala</h2>
- <table><colgroup>
- <col style="width:4%"><col style="width:14%"><col style="width:5%"><col style="width:10%">
- <col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:10%"><col style="width:18%">
- </colgroup><thead><tr>
- <th>Br.</th><th>Artikl</th><th>Kol.</th><th>Nabavna cijena<br>po kom.</th>
- <th>Cijena dobavljača<br>s maržom po kom.</th><th>Prodajna cijena<br>bez PDV-a po kom.</th>
- <th>Prodajna cijena<br>s PDV-om po kom.</th><th>Zarada<br>po kom.</th><th>Ukupna zarada<br>po artiklu</th>
- </tr></thead><tbody>${rows}</tbody></table>
- <div class="summary"><section class="totals"><h2>Ukupni iznosi</h2>
- <div class="line"><span>Ukupna cijena dobavljača s maržom bez PDV-a</span><strong>${euro(totalSupplier)}</strong></div>
- <div class="line"><span>Ukupno bez PDV-a za kupca</span><strong>${euro(totalCustomerNet)}</strong></div>
- <div class="line"><span>PDV (25%)</span><strong>${euro(totalVat)}</strong></div>
- <div class="line grand"><span>Ukupno s PDV-om za kupca</span><strong>${euro(totalCustomerGross)}</strong></div>
- </section><section class="profit"><div class="profit-label">Ukupna zarada</div><div class="profit-amount">${euro(totalProfit)}</div>
- <div class="line"><span>Broj različitih artikala</span><strong>${items.length}</strong></div>
- <div class="line"><span>Ukupna količina</span><strong>${quantity}</strong></div>
- <div class="line"><span>Marža na prodajnu cijenu bez PDV-a</span><strong>${margin}</strong></div>
- </section></div>
- <div class="footnote">Iznosi su iskazani u eurima (EUR). PDV je obračunat po stopi od 25%. Zarada je izračunata kao prodajna cijena bez PDV-a umanjena za cijenu dobavljača s maržom, pomnoženo s količinom.</div>
- </body></html>`);
- printWindow.document.close();
- printWindow.focus();
+  const items=getItems();
+  if(!items.length){alert('Dodaj barem jednu stavku prije izvoza ponude.');return;}
+  updateTotals();
+
+  const name=$('offerName').value.trim()||'Ponuda';
+  const date=$('offerDate').value||new Date().toISOString().slice(0,10);
+  let totalCustomerNet=0,totalVat=0,totalCustomerGross=0,totalSupplier=0,totalProfit=0;
+
+  const rows=items.map((i,index)=>{
+    const supplierTotal=i.supplier*i.qty;
+    const customerNet=i.net*i.qty;
+    const customerGross=i.gross*i.qty;
+    const vat=customerGross-customerNet;
+    const profitPerUnit=i.net-i.supplier;
+    const itemProfit=profitPerUnit*i.qty;
+    totalSupplier+=supplierTotal;
+    totalCustomerNet+=customerNet;
+    totalCustomerGross+=customerGross;
+    totalVat+=vat;
+    totalProfit+=itemProfit;
+    return `<tr>
+      <td class="center">${index+1}</td>
+      <td class="item">${escapeHtml(i.name||'Artikl')}</td>
+      <td class="center">${i.qty}</td>
+      <td class="money">${euro(i.purchase)}</td>
+      <td class="money">${euro(i.supplier)}</td>
+      <td class="money">${euro(i.net)}</td>
+      <td class="money">${euro(i.gross)}</td>
+      <td class="money">${euro(profitPerUnit)}</td>
+      <td class="money">${euro(itemProfit)}</td>
+    </tr>`;
+  }).join('');
+
+  const quantity=items.reduce((sum,i)=>sum+i.qty,0);
+  const margin=totalCustomerNet ? (totalProfit/totalCustomerNet*100).toLocaleString('hr-HR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%' : '—';
+
+  // Open the print window synchronously from the click handler. Safari may block
+  // or detach a popup opened after asynchronous work, which can produce a blank PDF.
+  const printWindow=window.open('','_blank');
+  if(!printWindow){alert('Safari je blokirao skočni prozor. Dopusti skočne prozore za ovu stranicu i pokušaj ponovno.');return;}
+
+  const printHtml=`<!doctype html>
+  <html lang="hr"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${escapeHtml(name)} - Ponuda</title>
+  <style>
+  @page{size:A4 landscape;margin:10mm}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#fff;color:#1e293b;font-family:Arial,Helvetica,sans-serif;font-size:9pt;line-height:1.3}
+  body{padding:10mm}
+  .toolbar{display:flex;gap:8px;margin:0 0 8mm;align-items:center}
+  button{padding:10px 16px;border:0;border-radius:8px;background:#1d4ed8;color:white;font-weight:bold;cursor:pointer}
+  button.close{background:#e2e8f0;color:#1e293b}
+  .header{display:flex;justify-content:space-between;align-items:flex-start;gap:8mm;padding-bottom:4mm;border-bottom:2px solid #1d4ed8;margin-bottom:5mm}
+  h1{font-size:24pt;line-height:1;margin:0 0 2mm;color:#173b72}
+  .subtitle{font-size:9pt;color:#64748b;overflow-wrap:anywhere}
+  .datebox{flex:0 0 38mm;border:1px solid #dbe3ef;border-radius:2mm;padding:3mm}
+  .date-label{font-size:7pt;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
+  .datebox strong{display:block;font-size:10pt;margin-top:1mm}
+  h2{font-size:11pt;color:#173b72;margin:0 0 2mm}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;margin:2mm 0 4mm;font-size:6.5pt}
+  th,td{border:1px solid #d7dfeb;padding:1.3mm .8mm;vertical-align:top;line-height:1.18;white-space:normal;overflow-wrap:anywhere;word-break:normal}
+  th{background:#eaf0f8;color:#243b5a;font-weight:700;text-align:center}
+  tbody tr:nth-child(even){background:#f8fafc}
+  .center{text-align:center}
+  .money{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .item{font-weight:700}
+  .summary{display:grid;grid-template-columns:1fr 1fr;gap:5mm;align-items:start;margin-top:3mm}
+  .totals,.profit{border:1px solid #d7dfeb;border-radius:2mm;padding:3.5mm 4mm;break-inside:avoid}
+  .line{display:flex;justify-content:space-between;align-items:flex-start;gap:4mm;padding:1.8mm 0;border-bottom:1px solid #e2e8f0}
+  .line span{flex:1;min-width:0;overflow-wrap:anywhere}
+  .line strong{white-space:nowrap;text-align:right}
+  .grand{font-size:11pt;font-weight:700;color:#173b72;border-top:2px solid #1d4ed8;margin-top:1mm;padding-top:2.5mm;border-bottom:0}
+  .profit{background:#eff6ff;border-color:#bfdbfe}
+  .profit-label{font-size:8.5pt;color:#475569}
+  .profit-amount{font-size:21pt;font-weight:700;color:#166534;margin:1mm 0 3mm}
+  .footnote{margin-top:4mm;padding-top:2mm;border-top:1px solid #e2e8f0;color:#64748b;font-size:7pt;line-height:1.3}
+  thead{display:table-header-group}tr{break-inside:avoid;page-break-inside:avoid}
+  @media print{body{padding:0}.toolbar{display:none}.summary,.header{break-inside:avoid}}
+  </style></head><body>
+  <div class="toolbar"><button onclick="window.print()">Ispiši / Spremi kao PDF</button><button class="close" onclick="window.close()">Zatvori</button><span>Provjeri da je ponuda vidljiva prije spremanja PDF-a.</span></div>
+  <div class="header"><div><h1>Ponuda</h1><div class="subtitle">${escapeHtml(name)}</div></div>
+  <div class="datebox"><div class="date-label">Datum izrade</div><strong>${escapeHtml(date)}</strong></div></div>
+  <h2>Pregled artikala</h2>
+  <table><colgroup>
+  <col style="width:4%"><col style="width:14%"><col style="width:5%"><col style="width:10%">
+  <col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:10%"><col style="width:18%">
+  </colgroup><thead><tr>
+  <th>Br.</th><th>Artikl</th><th>Kol.</th><th>Nabavna cijena<br>po kom.</th>
+  <th>Cijena dobavljača<br>s maržom po kom.</th><th>Prodajna cijena<br>bez PDV-a po kom.</th>
+  <th>Prodajna cijena<br>s PDV-om po kom.</th><th>Zarada<br>po kom.</th><th>Ukupna zarada<br>po artiklu</th>
+  </tr></thead><tbody>${rows}</tbody></table>
+  <div class="summary"><section class="totals"><h2>Ukupni iznosi</h2>
+  <div class="line"><span>Ukupna cijena dobavljača s maržom bez PDV-a</span><strong>${euro(totalSupplier)}</strong></div>
+  <div class="line"><span>Ukupno bez PDV-a za kupca</span><strong>${euro(totalCustomerNet)}</strong></div>
+  <div class="line"><span>PDV (25%)</span><strong>${euro(totalVat)}</strong></div>
+  <div class="line grand"><span>Ukupno s PDV-om za kupca</span><strong>${euro(totalCustomerGross)}</strong></div>
+  </section><section class="profit"><div class="profit-label">Ukupna zarada</div><div class="profit-amount">${euro(totalProfit)}</div>
+  <div class="line"><span>Broj različitih artikala</span><strong>${items.length}</strong></div>
+  <div class="line"><span>Ukupna količina</span><strong>${quantity}</strong></div>
+  <div class="line"><span>Marža na prodajnu cijenu bez PDV-a</span><strong>${margin}</strong></div>
+  </section></div>
+  <div class="footnote">Iznosi su iskazani u eurima (EUR). PDV je obračunat po stopi od 25%. Zarada je izračunata kao prodajna cijena bez PDV-a umanjena za cijenu dobavljača s maržom, pomnoženo s količinom.</div>
+  </body></html>`;
+
+  // Write the complete document in one operation, then leave it open for manual printing.
+  printWindow.document.open();
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+  printWindow.focus();
 }
 
 $('exportPdf').addEventListener('click',exportPdf);

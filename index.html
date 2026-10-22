@@ -26,7 +26,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
   @page{size:A4 landscape;margin:10mm}
   body{background:#fff;padding:0;color:#1e293b;font-family:Arial,Helvetica,sans-serif;font-size:7.5pt;line-height:1.25;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   header,.tabs,.no-print,footer,#calculator,#saved,#offer>*:not(#printOffer){display:none!important}
-  main{display:block;max-width:none;padding:0;margin:0}
+  main{display:block;width:100%;max-width:none;padding:0;margin:0}
+  #offer{width:100%;max-width:none}
   #offer{display:block!important;border:0!important;box-shadow:none!important;padding:0!important;margin:0!important}
   #printOffer{display:block!important}
   #printOffer .print-header{display:flex;justify-content:space-between;align-items:flex-start;gap:6mm;padding-bottom:3mm;border-bottom:2px solid #1d4ed8;margin-bottom:3mm}
@@ -39,7 +40,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
   #printOffer .meta-box .meta-label{font-size:7pt;color:#64748b;text-transform:uppercase;letter-spacing:.4px}
   #printOffer .meta-box strong{display:block;font-size:9pt;margin-top:1mm}
   #printOffer .section-title{font-size:9pt;font-weight:700;color:#173b72;margin:0 0 1mm}
-  #printOffer table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;margin:1mm 0 2.5mm;font-size:6pt}
+  #printOffer table{width:100%;border-collapse:collapse;table-layout:fixed;margin:1mm 0 2.5mm;font-size:6pt}
   #printOffer th,#printOffer td{border:1px solid #d7dfeb;padding:1mm .8mm;text-align:left;vertical-align:top;white-space:normal!important;overflow-wrap:anywhere;word-break:normal;line-height:1.15}
   #printOffer th{background:#eaf0f8;color:#243b5a;font-weight:700;text-align:center;hyphens:auto}
   #printOffer tbody tr:nth-child(even){background:#f8fafc}
@@ -64,7 +65,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
   #printOffer .footnote{margin-top:2mm;padding-top:1.5mm;border-top:1px solid #e2e8f0;color:#64748b;font-size:6pt;line-height:1.2}
   #printOffer thead{display:table-header-group}
   #printOffer tr{break-inside:avoid;page-break-inside:avoid}
-  #printOffer{width:92%;max-width:250mm;margin-left:auto!important;margin-right:auto!important;overflow:visible;box-sizing:border-box}
+  #printOffer{display:block!important;width:92%!important;max-width:250mm!important;margin-left:auto!important;margin-right:auto!important;overflow:visible;box-sizing:border-box}
   #printOffer *{box-sizing:border-box}
   #printOffer .summary-grid,#printOffer .print-header{break-inside:avoid;page-break-inside:avoid}
   #printOffer .totals,#printOffer .profit-card{break-inside:avoid;page-break-inside:avoid}
@@ -99,6 +100,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;padding:8px 16px}
     <div id="items"></div>
     <div class="actions no-print">
       <button id="addItem" class="btn-secondary">＋ Dodaj stavku</button>
+      <button id="addTisakItem" class="btn-secondary">＋ Dodaj TISAK artikl</button>
       <button id="saveOffer" class="btn-primary">Spremi ponudu</button>
       <button id="exportPdf" class="btn-green">Izvezi / ispiši PDF</button>
     </div>
@@ -152,17 +154,19 @@ document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
  if(b.dataset.tab==='saved')renderSaved();
 }));
 $('offerDate').value=new Date().toISOString().slice(0,10);
-function addItem(data={}){
+function addItem(data={}, typeOverride=null){
+ const itemType=typeOverride||data.type||'standard';
+ const isTisak=itemType==='tisak';
  itemCounter++; const id=itemCounter;
- const row=document.createElement('div');row.className='item-row';row.dataset.id=id;
- row.innerHTML=`<div class="item-row-head"><strong>Stavka ${id}</strong><button type="button" class="btn-danger no-print remove">Ukloni</button></div>
+ const row=document.createElement('div');row.className='item-row';row.dataset.id=id;row.dataset.type=itemType;
+ row.innerHTML=`<div class="item-row-head"><strong>${isTisak?'TISAK artikl':'Stavka'} ${id}</strong><button type="button" class="btn-danger no-print remove">Ukloni</button></div>
  <div class="grid">
- <div class="field"><label>Naziv stavke</label><input class="name" placeholder="Naziv proizvoda/usluge"></div>
+ <div class="field"><label>Naziv stavke</label><input class="name" placeholder="${isTisak?'TISAK':'Naziv proizvoda/usluge'}"></div>
  <div class="field"><label>Količina</label><input class="qty" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
- <div class="field"><label>Nabavna cijena / kom. (€)</label><input class="purchase" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
- <div class="field"><label>Cijena dobavljača s maržom / kom. (€)</label><input class="supplier" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
+ ${isTisak?'':`<div class="field purchase-field"><label>Nabavna cijena / kom. (€)</label><input class="purchase" type="text" inputmode="decimal" autocomplete="off" value="0"></div>`}
+ <div class="field"><label>Cijena dobavljača s maržom / kom. (€), bez PDV-a</label><input class="supplier" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
  <div class="field"><label>Prodajna cijena bez PDV-a / kom. (€)</label><input class="net" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
- <div class="field"><label>Prodajna cijena s PDV-om / kom. (€)</label><input class="gross" type="text" inputmode="decimal" autocomplete="off" value="0"></div>
+ <div class="field"><label>Prodajna cijena s PDV-om / kom. (€)</label><input class="gross" type="text" inputmode="decimal" autocomplete="off" value="0" ${isTisak?'readonly title="Automatski se računa kao prodajna cijena bez PDV-a + 25% PDV-a"':''}></div>
  </div>
  <div class="results" style="margin-top:10px">
  <div class="metric"><div class="label">Zarada po komadu</div><div class="value profit-unit">€ 0,00</div></div>
@@ -171,41 +175,54 @@ function addItem(data={}){
  $('items').appendChild(row);
  const q=row.querySelector('.qty'),p=row.querySelector('.purchase'),s=row.querySelector('.supplier'),n=row.querySelector('.net'),g=row.querySelector('.gross');
  const recalc=(source)=>{
-   let pv=Math.max(0,parseDecimal(p.value)), sv=Math.max(0,parseDecimal(s.value)), nv=Math.max(0,parseDecimal(n.value)), gv=Math.max(0,parseDecimal(g.value));
-   if(source==='purchase'){const c=calculated(pv);s.value=moneyInput(c.supplier).toFixed(2);n.value=moneyInput(c.net).toFixed(2);g.value=moneyInput(c.gross).toFixed(2);}
+   let pv=p?Math.max(0,parseDecimal(p.value)):0, sv=Math.max(0,parseDecimal(s.value)), nv=Math.max(0,parseDecimal(n.value)), gv=Math.max(0,parseDecimal(g.value));
+   if(!isTisak && source==='purchase'){const c=calculated(pv);s.value=moneyInput(c.supplier).toFixed(2);n.value=moneyInput(c.net).toFixed(2);g.value=moneyInput(c.gross).toFixed(2);}
    if(source==='net')g.value=moneyInput(nv*1.25).toFixed(2);
-   if(source==='gross')n.value=moneyInput(gv/1.25).toFixed(2);
+   if(source==='gross' && !isTisak)n.value=moneyInput(gv/1.25).toFixed(2);
    const qty=Math.max(1,Number(q.value)||1);
    const profit=moneyInput(parseDecimal(n.value)-parseDecimal(s.value));
    row.querySelector('.profit-unit').textContent=euro(profit);
    row.querySelector('.profit-total').textContent=euro(profit*qty);
    updateTotals();
  };
- p.addEventListener('input',()=>recalc('purchase'));s.addEventListener('input',()=>recalc('supplier'));n.addEventListener('input',()=>recalc('net'));g.addEventListener('input',()=>recalc('gross'));q.addEventListener('input',()=>recalc('qty'));
+ if(p)p.addEventListener('input',()=>recalc('purchase'));
+ s.addEventListener('input',()=>recalc('supplier'));
+ n.addEventListener('input',()=>recalc('net'));
+ if(!isTisak)g.addEventListener('input',()=>recalc('gross'));
+ q.addEventListener('input',()=>recalc('qty'));
  row.querySelector('.remove').addEventListener('click',()=>{row.remove();updateTotals();});
- if(data.name)row.querySelector('.name').value=data.name;
+ if(data.name)row.querySelector('.name').value=data.name; else if(isTisak)row.querySelector('.name').value='TISAK';
  if(data.qty)q.value=data.qty;
- if(data.purchase!=null)p.value=data.purchase;
+ if(p && data.purchase!=null)p.value=data.purchase;
  if(data.supplier!=null)s.value=data.supplier;
  if(data.net!=null)n.value=data.net;
  if(data.gross!=null)g.value=data.gross;
- if(data.purchase==null)recalc('purchase');else recalc('qty');
+ if(isTisak){
+   // TISAK stavke nemaju nabavnu cijenu; prodajna cijena s PDV-om uvijek se računa iz neto cijene.
+   recalc('net');
+ } else if(data.purchase==null)recalc('purchase');else recalc('qty');
  return row;
 }
-function getItems(){return [...$('items').querySelectorAll('.item-row')].map(row=>({
- name:row.querySelector('.name').value.trim()||'Stavka',
+function getItems(){return [...$('items').querySelectorAll('.item-row')].map(row=>{
+ const type=row.dataset.type||'standard';
+ const net=Math.max(0,parseDecimal(row.querySelector('.net').value));
+ return {
+ type,
+ name:row.querySelector('.name').value.trim()||(type==='tisak'?'TISAK':'Stavka'),
  qty:Math.max(1,Number(row.querySelector('.qty').value)||1),
- purchase:Math.max(0,parseDecimal(row.querySelector('.purchase').value)),
+ purchase:type==='tisak'?null:Math.max(0,parseDecimal(row.querySelector('.purchase').value)),
  supplier:Math.max(0,parseDecimal(row.querySelector('.supplier').value)),
- net:Math.max(0,parseDecimal(row.querySelector('.net').value)),
- gross:Math.max(0,parseDecimal(row.querySelector('.gross').value))
-}));}
+ net,
+ gross:type==='tisak'?moneyInput(net*1.25):Math.max(0,parseDecimal(row.querySelector('.gross').value))
+ };
+});}
 function updateTotals(){
  const items=getItems();let net=0,vat=0,gross=0,profit=0;
  items.forEach(i=>{net+=i.net*i.qty;vat+=(i.gross-i.net)*i.qty;gross+=i.gross*i.qty;profit+=(i.net-i.supplier)*i.qty;});
  $('totalNet').textContent=euro(net);$('totalVat').textContent=euro(vat);$('totalGross').textContent=euro(gross);$('totalProfit').textContent=euro(profit);
 }
 $('addItem').addEventListener('click',()=>addItem());
+$('addTisakItem').addEventListener('click',()=>addItem({},'tisak'));
 $('saveOffer').addEventListener('click',()=>{
  const items=getItems();if(!items.length){alert('Dodaj barem jednu stavku.');return;}
  const offer={id:Date.now(),name:$('offerName').value.trim()||'Ponuda',date:$('offerDate').value||new Date().toISOString().slice(0,10),items,totals:{net:items.reduce((a,i)=>a+i.net*i.qty,0),gross:items.reduce((a,i)=>a+i.gross*i.qty,0),profit:items.reduce((a,i)=>a+(i.net-i.supplier)*i.qty,0)}};
@@ -258,7 +275,7 @@ function exportPdf(){
       <td class="center">${index+1}</td>
       <td class="item">${escapeHtml(i.name||'Artikl')}</td>
       <td class="center">${i.qty}</td>
-      <td class="money">${euro(i.purchase)}</td>
+      <td class="money">${i.type==='tisak'?'—':euro(i.purchase)}</td>
       <td class="money">${euro(i.supplier)}</td>
       <td class="money">${euro(i.net)}</td>
       <td class="money">${euro(i.gross)}</td>
